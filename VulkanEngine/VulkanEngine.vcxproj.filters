@@ -18,19 +18,10 @@
     <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Miscellaneous\MeshBuilder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Miscellaneous\Rendering.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\VulkanEngine.cpp">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Miscellaneous\Profiling.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Miscellaneous\Vulkan_Instance.cpp">
+    <ClCompile Include="src\Profiling\Profiling.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Scene.cpp">
@@ -50,23 +41,14 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="src\readme.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="src\VertexShader.vert" />
     <None Include="src\FragmentShader.frag" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="headers\MeshBuilder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\VulkanEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Miscellaneous\Profiling.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Miscellaneous\Vulkan_Instance.h">
+    <ClInclude Include="src\Profiling\Profiling.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Scene.h">

@@ -164,22 +164,15 @@
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\Miscellaneous\MeshBuilder.cpp" />
-    <ClCompile Include="src\Miscellaneous\Profiling.cpp" />
-    <ClCompile Include="src\Miscellaneous\Rendering.cpp" />
+    <ClCompile Include="src\Profiling\Profiling.cpp" />
     <ClCompile Include="src\TinyOBJ\tinyOBJ_Helpers.cpp" />
-    <ClCompile Include="src\Miscellaneous\Vulkan_Instance.cpp" />
     <ClCompile Include="src\Vulkan\VulkanEngine_Helpers.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="src\readme.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\FragmentShader.frag" />
     <None Include="src\VertexShader.vert" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="headers\MeshBuilder.h" />
     <ClCompile Include="src\VulkanEngine.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </ExcludedFromBuild>
@@ -195,9 +188,8 @@
     <ClInclude Include="src\GLFW\GLFW.h" />
     <ClInclude Include="src\Mesh.h" />
     <ClInclude Include="src\Scene.h" />
-    <ClInclude Include="src\Miscellaneous\Profiling.h" />
+    <ClInclude Include="src\Profiling\Profiling.h" />
     <ClInclude Include="src\TinyOBJ\tinyOBJ_Helpers.h" />
-    <ClInclude Include="src\Miscellaneous\Vulkan_Instance.h" />
     <ClInclude Include="src\Vulkan\VulkanEngine_Descriptors.h" />
     <ClInclude Include="src\Vulkan\VulkanEngine_Helpers.h" />
   </ItemGroup>

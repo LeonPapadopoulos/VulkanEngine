@@ -6,7 +6,7 @@
 #include "TinyOBJ/tinyOBJ_Helpers.h"
 #include "Vulkan/VulkanEngine_Helpers.h"
 #include "Vulkan/VulkanEngine_Descriptors.h"
-#include "Miscellaneous/Profiling.h"
+#include "Profiling/Profiling.h"
 
 #pragma region DEBUGGING
 VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger) {
