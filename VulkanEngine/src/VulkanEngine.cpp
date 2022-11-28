@@ -38,6 +38,7 @@ namespace VulkanEngine {
 
 		// Custom Scenario
 		m_Scene = new Scene();
+		m_Camera = new Camera(m_Window);
 		// ------------
 
 		initVulkan();
@@ -52,7 +53,7 @@ namespace VulkanEngine {
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // GLFW_FALSE
 
-		m_Window = glfwCreateWindow(WIDTH, HEIGHT, "VulkanEngine", nullptr, nullptr);
+		m_Window = glfwCreateWindow(WIDTH, HEIGHT, "VulkanEngine v1.0.0", nullptr, nullptr);
 		glfwSetWindowUserPointer(m_Window, this);
 		glfwSetFramebufferSizeCallback(m_Window, framebufferResizeCallback);
 	}
@@ -88,25 +89,16 @@ namespace VulkanEngine {
 		// DSetLayouts declaring Descriptors needed for specific GPipelines
 		createDescriptorSetLayout(m_Device, m_DescriptorSetLayout);
 		
-		//{ Setup Descriptors
-			// ubo Descriptor
-			//createUniformBuffers(m_Device, MAX_FRAMES_IN_FLIGHT, sizeof(UniformBufferObject), m_UniformBuffers, m_UniformBuffersMemory, m_UniformBuffersMapped);
-			createUniformBuffersCamera();
-			createUniformBuffersScene(*m_Scene);
+		// ubo Descriptor
+		createUniformBuffersCamera();
+		createUniformBuffersScene(*m_Scene);
 
-			// Texture Descriptor
-			//createTextureImage(m_Device, m_CommandPool, TEXTURE_PATH, m_MipLevels, m_TextureImageMemory, m_TextureImage);
-			//createTextureImageView(m_Device, m_TextureImage, m_MipLevels, m_TextureImageView);
-			//createTextureSampler(m_PhysicalDevice, m_Device, m_MipLevels, m_TextureSampler);
-			createTextureDescriptors(*m_Scene);
-		// }
+		// Texture Descriptor
+		createTextureDescriptors(*m_Scene);
 		
 		// Binds DSets to Descriptors! || DSets, e.g. 1DSetLayout = 2DSets (DSet1(1descriptor) = Global ubo | DSet2(2descriptor) = Object ubo & TSampler) 
 		createDescriptorSetsScene(*m_Scene);
 
-		//loadModel(MODEL_PATH, m_Vertices, m_Indices);
-		//createVertexBuffer(m_Device, m_CommandPool, m_Vertices, m_VertexBuffer, m_VertexBufferMemory);
-		//createIndexBuffer(m_Device, m_CommandPool,  m_Indices, m_IndexBuffer, m_IndexBufferMemory);
 		createVertexIndexBufferSceneModels(*m_Scene);
 
 		// GPipeline
@@ -122,6 +114,7 @@ namespace VulkanEngine {
 				//Profiling::Timer timer;
 				//glfwSetWindowTitle(m_Window, "Test"); // TODO: Update Window Title to display FPS
 				drawFrame();
+				m_Camera->Update();
 			//}
 		}
 
@@ -830,18 +823,15 @@ namespace VulkanEngine {
 	{
 		for (size_t i = 0; i < (*m_Scene).m_SceneData->m_MeshCount; i++)
 		{
-			Mesh* currentMesh = (*m_Scene).m_SceneData->m_Meshes[i];
+			Mesh* mesh = (*m_Scene).m_SceneData->m_Meshes[i];
 			// ASSUMES ONLY 1 MATERIAL PER MESH;
-			Material* material = currentMesh->m_Material;
+			Material* material = mesh->m_Material;
 
-			createGraphicsPipeline(m_Device, material->m_Shader->m_VertShaderCode, material->m_Shader->m_FragShaderCode, m_MsaaSamples, m_DescriptorSetLayout, m_RenderPass, material->m_GraphicsPipelineLayout, material->m_GraphicsPipeline);
+			createGraphicsPipeline(m_Device , mesh->m_Topology, material->m_Shader->m_VertShaderCode, material->m_Shader->m_FragShaderCode, m_MsaaSamples, m_DescriptorSetLayout, m_RenderPass, material->m_GraphicsPipelineLayout, material->m_GraphicsPipeline);
 		}
 	}
-	void VKEngine::createGraphicsPipeline(const VkDevice& logicalDevice, const std::vector<char>& vertShaderCode, const std::vector<char>& fragShaderCode, VkSampleCountFlagBits msaaSamples, const VkDescriptorSetLayout& descriptorSetLayout, const VkRenderPass& renderPass, VkPipelineLayout& pipelineLayout, VkPipeline& graphicsPipeline)
+	void VKEngine::createGraphicsPipeline(const VkDevice& logicalDevice, const VkPrimitiveTopology primitiveTopology, const std::vector<char>& vertShaderCode, const std::vector<char>& fragShaderCode, VkSampleCountFlagBits msaaSamples, const VkDescriptorSetLayout& descriptorSetLayout, const VkRenderPass& renderPass, VkPipelineLayout& pipelineLayout, VkPipeline& graphicsPipeline)
 	{
-		//auto vertShaderCode = readFile(vertexShaderFileDirectory);
-		//auto fragShaderCode = readFile(fragmentShaderFileDirectory);
-
 		VkShaderModule vertShaderModule = createShaderModule(logicalDevice, vertShaderCode);
 		VkShaderModule fragShaderModule = createShaderModule(logicalDevice, fragShaderCode);
 
@@ -871,7 +861,7 @@ namespace VulkanEngine {
 
 		VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
 		inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-		inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+		inputAssembly.topology = primitiveTopology;
 		inputAssembly.primitiveRestartEnable = VK_FALSE;
 
 		VkPipelineViewportStateCreateInfo viewportState{};
@@ -1162,15 +1152,15 @@ namespace VulkanEngine {
 
 		std::array<VkDescriptorPoolSize, 2> poolSizes{};
 		poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-		poolSizes[0].descriptorCount = static_cast<uint32_t>(maxFramesInFlight) * (1 /*global*/ + 2 /*2 Models in Scene*/);
+		poolSizes[0].descriptorCount = static_cast<uint32_t>(maxFramesInFlight) * (1 /*global*/ + 3 /*2 Models in Scene*/);
 		poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		poolSizes[1].descriptorCount = static_cast<uint32_t>(maxFramesInFlight) * (2 /*2 Models à 1 Texture in Scene*/);
+		poolSizes[1].descriptorCount = static_cast<uint32_t>(maxFramesInFlight) * (3 /*2 Models à 1 Texture in Scene*/);
 
 		VkDescriptorPoolCreateInfo poolInfo{};
 		poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 		poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
 		poolInfo.pPoolSizes = poolSizes.data();
-		poolInfo.maxSets = static_cast<uint32_t>(maxFramesInFlight) * (2 /*2 Models in Scene*/);
+		poolInfo.maxSets = static_cast<uint32_t>(maxFramesInFlight) * (3 /*2 Models in Scene*/);
 
 		if (vkCreateDescriptorPool(logicalDevice, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create descriptor pool!");
@@ -1232,7 +1222,7 @@ namespace VulkanEngine {
 
 		descriptorSets.resize(maxFramesInFlight);
 		if (vkAllocateDescriptorSets(logicalDevice, &allocInfo, descriptorSets.data()) != VK_SUCCESS) {
-			throw std::runtime_error("failed to allocate descriptor sets!");
+			throw std::runtime_error("failed to allocate descriptor sets!"); // Did you pool enough descriptors?
 		}
 
 		for (size_t i = 0; i < maxFramesInFlight; i++) 
@@ -1397,11 +1387,10 @@ namespace VulkanEngine {
 		float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
 		UniformBufferGlobal ubo{};
-		ubo.view = glm::lookAt(glm::vec3(3.0f, 3.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-		ubo.proj = glm::perspective(glm::radians(45.0f), m_SwapChainExtent.width / (float)m_SwapChainExtent.height, 0.1f, 10.0f);
+		ubo.view = m_Camera->GetViewMatrix();
+		ubo.proj = glm::perspective(glm::radians(45.0f), m_SwapChainExtent.width / (float)m_SwapChainExtent.height, 0.1f, 1000.0f);
 		ubo.proj[1][1] *= -1;
 		ubo.viewProj = ubo.proj * ubo.view;
-		//ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 
 		memcpy(m_UniformBuffersMapped[currentImage], &ubo, sizeof(ubo));
 	}
@@ -1412,15 +1401,14 @@ namespace VulkanEngine {
 		auto currentTime = std::chrono::high_resolution_clock::now();
 		float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
-		// TODO REFACTOR THIS!!!
-		UniformBufferPerModel ubo0{};
-		float offset = 1.0f;
-		ubo0.model = glm::rotate(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -offset)), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-		memcpy(scene.m_SceneData->m_Meshes[0]->m_UniformBuffersMapped[currentImage], &ubo0, sizeof(ubo0));
+		for (int i = 0; i < scene.m_SceneData->m_MeshCount; i++)
+		{
+			Mesh* mesh = scene.m_SceneData->m_Meshes[i];
+			UniformBufferPerModel ubo{};
+			ubo.model = mesh->m_Transform;
 
-		UniformBufferPerModel ubo1{};
-		ubo1.model = glm::rotate(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f)), -time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-		memcpy(scene.m_SceneData->m_Meshes[1]->m_UniformBuffersMapped[currentImage], &ubo1, sizeof(ubo1));
+			memcpy(scene.m_SceneData->m_Meshes[i]->m_UniformBuffersMapped[currentImage], &ubo, sizeof(ubo));
+		}
 	}
 
 
@@ -1446,7 +1434,7 @@ namespace VulkanEngine {
 			renderPassInfo.renderArea.extent = m_SwapChainExtent;
 
 			std::array<VkClearValue, 2> clearValues{};
-			clearValues[0].color = { {0.0f, 0.0f, 0.0f, 1.0f} };
+			clearValues[0].color = { {0.018f, 0.018f, 0.018f, 1.0f} };
 			clearValues[1].depthStencil = { 1.0f, 0 };
 
 			renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
@@ -1468,21 +1456,8 @@ namespace VulkanEngine {
 				scissor.extent = m_SwapChainExtent;
 				vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-			// Draw All Objects; Dynamically bind pipeline based on material attached to Mesh
-			 
+				// DRAW ALL MESHES
 				drawScene(*m_Scene, commandBuffer);
-				//vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_GraphicsPipeline);
-
-				//VkBuffer vertexBuffers[] = { m_VertexBuffer }; // TODO: Extendable when multiple Meshes share CommandBuffer?
-				//VkDeviceSize offsets[] = { 0 };
-				//vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
-
-				//vkCmdBindIndexBuffer(commandBuffer, m_IndexBuffer, 0, VK_INDEX_TYPE_UINT32);
-
-				//vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_PipelineLayout, 0, 1, &m_DescriptorSets[m_CurrentFrame], 0, nullptr);
-
-				//vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(m_Indices.size()), 1, 0, 0, 0);
-			//-------------------------------------------------------------------------------
 
 			vkCmdEndRenderPass(commandBuffer);
 

@@ -36,6 +36,7 @@ namespace VulkanEngine {
 
 		std::vector<char> m_VertShaderCode;
 		std::vector<char> m_FragShaderCode;
+		void LoadFragmentShader(const std::string& shaderDirectory);
 
 	private:
 		void LoadDefaultShader();
@@ -77,9 +78,16 @@ namespace VulkanEngine {
 
 	public:
 		Mesh();
-		~Mesh();
+		virtual ~Mesh();
+
+		void LoadDefaultMesh();
+		void SetTransform(glm::mat4 transform);
+
+		glm::mat4 m_Transform = glm::mat4(1.0);
 
 		Material* m_Material;
+
+		VkPrimitiveTopology m_Topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 
 		std::vector<Vertex> m_Vertices;
 		std::vector<uint32_t> m_Indices;

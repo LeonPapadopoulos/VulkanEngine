@@ -9,7 +9,7 @@
 namespace VulkanEngine {
 
 	struct SceneData {
-		int m_MeshCount;
+		int m_MeshCount{0};
 		std::vector<Mesh*> m_Meshes;
 	};
 

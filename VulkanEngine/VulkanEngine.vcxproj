@@ -160,7 +160,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\GLFW\GLFW.cpp" />
+    <ClCompile Include="src\GridMesh.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -183,6 +185,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </ExcludedFromBuild>
     </ClCompile>
+    <ClInclude Include="src\Camera.h" />
+    <ClInclude Include="src\GridMesh.h" />
+    <ClInclude Include="src\Maths\Maths.h" />
     <ClInclude Include="src\Vertex.h" />
     <ClInclude Include="src\VulkanEngine.h" />
     <ClInclude Include="src\GLFW\GLFW.h" />

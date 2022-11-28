@@ -23,6 +23,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "Camera.h"
 #include "Scene.h"
 #include "Vertex.h"
 
@@ -47,8 +48,8 @@ namespace VulkanEngine {
 		std::vector<VkPresentModeKHR> presentModes;
 	};
 
-	const uint32_t WIDTH = 800;
-	const uint32_t HEIGHT = 600;
+	const uint32_t WIDTH = 1920;//800;
+	const uint32_t HEIGHT = 1080;// 600;
 
 	const int MAX_FRAMES_IN_FLIGHT = 2;
 
@@ -78,6 +79,7 @@ namespace VulkanEngine {
 		///////////* EXTERNAL *////////////
 		///////////////////////////////////
 		Scene* m_Scene;
+		Camera* m_Camera;
 
 
 		///////////////////////////////////
@@ -137,28 +139,6 @@ namespace VulkanEngine {
 
 		VkDescriptorPool m_DescriptorPool; // Holds all descriptors; eg. 10x uniformbuffers, 3x images
 		VkDescriptorSetLayout m_DescriptorSetLayout; // Shader-Dependent // Describes what kind of Descriptors make up a DSet; e.g. DSetLayout(DSet1) = 1x ubo & 1x image, with ubo binding = 0 and image binding = 1
-		//std::vector<VkDescriptorSet> m_DescriptorSets; // Dset consists of multiple descriptors (ea. uniformbuffers, images etc) // DSets are bound to GPipeline //  Descriptors are bound directly to buffers etc.
-
-
-		//VkPipelineLayout m_PipelineLayout; // Dependent on the DescriptorSetLayout(s) it holds
-		//VkPipeline m_GraphicsPipeline;
-
-
-		// Sampling Textures referenced in Shaders.
-		//uint32_t m_MipLevels; // Per individual Texture! Dependend on its Format
-		//VkImage m_TextureImage;
-		//VkDeviceMemory m_TextureImageMemory;
-		//VkImageView m_TextureImageView;
-		//VkSampler m_TextureSampler;
-
-
-		// Vertices/Indices making up the meshes drawn in the scene
-		//std::vector<Vertex> m_Vertices;
-		//std::vector<uint32_t> m_Indices;
-		//VkBuffer m_VertexBuffer;
-		//VkDeviceMemory m_VertexBufferMemory;
-		//VkBuffer m_IndexBuffer;
-		//VkDeviceMemory m_IndexBufferMemory;
 
 		// GLOBAL SHADER DATA - e.g. Camera
 		std::vector<VkBuffer> m_UniformBuffers;
@@ -205,7 +185,7 @@ namespace VulkanEngine {
 #pragma region VULKAN SPECIFIC SETUP
 
 		void createDescriptorSetLayout(const VkDevice& logicalDevice, VkDescriptorSetLayout& descriptorSetLayout);
-		void createGraphicsPipeline(const VkDevice& logicalDevice, const std::vector<char>& vertShaderCode, const std::vector<char>& fragShaderCode, VkSampleCountFlagBits msaaSamples, const VkDescriptorSetLayout& descriptorSetLayout, const VkRenderPass& renderPass, VkPipelineLayout& pipelineLayout, VkPipeline& graphicsPipeline);
+		void createGraphicsPipeline(const VkDevice& logicalDevice, const VkPrimitiveTopology primitiveTopology, const std::vector<char>& vertShaderCode, const std::vector<char>& fragShaderCode, VkSampleCountFlagBits msaaSamples, const VkDescriptorSetLayout& descriptorSetLayout, const VkRenderPass& renderPass, VkPipelineLayout& pipelineLayout, VkPipeline& graphicsPipeline);
 		void createTextureImage(const VkDevice& logicalDevice, const VkCommandPool& commandPool, const std::string& texturePath, uint32_t& mipLevels, VkDeviceMemory& textureImageMemory, VkImage& textureImage);
 		void createTextureImageView(const VkDevice& logicalDevice, const VkImage& textureImage, const uint32_t& mipLevels, VkImageView& textureImageView);
 		void createTextureSampler(const VkPhysicalDevice& physicalDevice, const VkDevice& logicalDevice, const uint32_t& mipLevels, VkSampler& textureSampler);
