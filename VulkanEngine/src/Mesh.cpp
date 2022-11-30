@@ -90,10 +90,10 @@ namespace VulkanEngine {
 		m_Transform = transform;
 	}
 
-	void Mesh::CreateBuffers()
-	{
-		// TODO
-	}
+	//void Mesh::CreateBuffers()
+	//{
+	//	// TODO
+	//}
 }
 
 

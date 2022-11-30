@@ -8,7 +8,6 @@ namespace VulkanEngine {
 	{
 		createGridMesh(numSegmentsX, numSegmentsZ, spacePerSegmentX, spacePerSegmentZ, gridColor);
 		m_Topology = VK_PRIMITIVE_TOPOLOGY_LINE_LIST;
-		//createTestMesh();
 	}
 
 	GridMesh::~GridMesh()
@@ -23,6 +22,7 @@ namespace VulkanEngine {
 
 		int index = 0;
 
+		// Z-Axis lines
 		for (uint32_t i = 0; i < numSegmentsX; i++)
 		{
 			for (uint32_t j = 0; j < 2; j++)
@@ -39,6 +39,11 @@ namespace VulkanEngine {
 			}
 		}
 
+		size_t verts = m_Vertices.size();
+		m_Vertices[verts / 2 - 0].color = m_ZAxisColor;
+		m_Vertices[verts / 2 + 1].color = m_ZAxisColor;
+
+		// X-Axis lines
 		for (uint32_t i = 0; i < numSegmentsZ; i++)
 		{
 			for (uint32_t j = 0; j < 2; j++)
@@ -54,6 +59,9 @@ namespace VulkanEngine {
 				index++;
 			}
 		}
+
+		m_Vertices[m_Vertices.size() - verts / 2 - 0].color = m_XAxisColor;
+		m_Vertices[m_Vertices.size() - verts / 2 + 1].color = m_XAxisColor;
 	}
 
 	void GridMesh::createTestMesh()

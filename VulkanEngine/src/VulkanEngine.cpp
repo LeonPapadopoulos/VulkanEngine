@@ -37,8 +37,7 @@ namespace VulkanEngine {
 		initWindow();
 
 		// Custom Scenario
-		m_Scene = new Scene();
-		m_Camera = new Camera(m_Window);
+		m_Scene = new Scene(m_Window);
 		// ------------
 
 		initVulkan();
@@ -114,7 +113,7 @@ namespace VulkanEngine {
 				//Profiling::Timer timer;
 				//glfwSetWindowTitle(m_Window, "Test"); // TODO: Update Window Title to display FPS
 				drawFrame();
-				m_Camera->Update();
+				m_Scene->Update();
 			//}
 		}
 
@@ -1148,19 +1147,19 @@ namespace VulkanEngine {
 
 	void VKEngine::createDescriptorPool(const VkDevice& logicalDevice, const int& maxFramesInFlight, VkDescriptorPool& descriptorPool)
 	{
-		// TODO : REMOVE HARDCODED DESCRIPTOR(SET) NUMBERS !!!!!
+		// TODO : GENERALIZE THE RIGHT AMOUNT OF DESCRIPTOR ALLOCATIONS
 
 		std::array<VkDescriptorPoolSize, 2> poolSizes{};
 		poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-		poolSizes[0].descriptorCount = static_cast<uint32_t>(maxFramesInFlight) * (1 /*global*/ + 3 /*2 Models in Scene*/);
+		poolSizes[0].descriptorCount = static_cast<uint32_t>(maxFramesInFlight) * (1 /* global ubo for Camera Data */ + m_Scene->m_SceneData->m_MeshCount /* 1 per Mesh in Scene */);
 		poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		poolSizes[1].descriptorCount = static_cast<uint32_t>(maxFramesInFlight) * (3 /*2 Models à 1 Texture in Scene*/);
+		poolSizes[1].descriptorCount = static_cast<uint32_t>(maxFramesInFlight) * (m_Scene->m_SceneData->m_MeshCount /* 1 Texture per Mesh in Scene */);
 
 		VkDescriptorPoolCreateInfo poolInfo{};
 		poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 		poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
 		poolInfo.pPoolSizes = poolSizes.data();
-		poolInfo.maxSets = static_cast<uint32_t>(maxFramesInFlight) * (3 /*2 Models in Scene*/);
+		poolInfo.maxSets = static_cast<uint32_t>(maxFramesInFlight) * (m_Scene->m_SceneData->m_MeshCount /* 1 per Mesh in Scene */);
 
 		if (vkCreateDescriptorPool(logicalDevice, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create descriptor pool!");
@@ -1222,7 +1221,8 @@ namespace VulkanEngine {
 
 		descriptorSets.resize(maxFramesInFlight);
 		if (vkAllocateDescriptorSets(logicalDevice, &allocInfo, descriptorSets.data()) != VK_SUCCESS) {
-			throw std::runtime_error("failed to allocate descriptor sets!"); // Did you pool enough descriptors?
+			throw std::runtime_error("failed to allocate descriptor sets!");
+			// - Allocated enough descriptors in pool?
 		}
 
 		for (size_t i = 0; i < maxFramesInFlight; i++) 
@@ -1387,7 +1387,7 @@ namespace VulkanEngine {
 		float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
 		UniformBufferGlobal ubo{};
-		ubo.view = m_Camera->GetViewMatrix();
+		ubo.view = m_Scene->m_Camera->GetViewMatrix();
 		ubo.proj = glm::perspective(glm::radians(45.0f), m_SwapChainExtent.width / (float)m_SwapChainExtent.height, 0.1f, 1000.0f);
 		ubo.proj[1][1] *= -1;
 		ubo.viewProj = ubo.proj * ubo.view;
@@ -1501,6 +1501,9 @@ namespace VulkanEngine {
 				lastMesh = currentMesh;
 			}
 
+			if (lastMesh == nullptr) 
+				return;
+
 			vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(lastMesh->m_Indices.size()), 1, 0, 0, 0);
 		}
 	}
@@ -1549,7 +1552,6 @@ namespace VulkanEngine {
 
 		return imageView;
 	}
-	
 
 	VkFormat VKEngine::findSupportedFormat(const VkPhysicalDevice& physicalDevice, const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features)
 	{

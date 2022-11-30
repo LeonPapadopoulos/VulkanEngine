@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Mesh.h"
+#include "Camera.h"
 
 #include <vector>
 #include <string>
@@ -15,12 +16,16 @@ namespace VulkanEngine {
 
 	class Scene {
 	public:
-		Scene();
+		Scene(GLFWwindow* window);
 		~Scene();
 
+		void Update();
+
+		GLFWwindow* m_Window;
+		Camera* m_Camera;
 		SceneData* m_SceneData;
 	private:
-		void InitScene();
+		void InitScene(GLFWwindow* window);
 	};
 
 }

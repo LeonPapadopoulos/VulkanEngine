@@ -48,8 +48,8 @@ namespace VulkanEngine {
 		std::vector<VkPresentModeKHR> presentModes;
 	};
 
-	const uint32_t WIDTH = 1920;//800;
-	const uint32_t HEIGHT = 1080;// 600;
+	const uint32_t WIDTH = 1920;
+	const uint32_t HEIGHT = 1080;
 
 	const int MAX_FRAMES_IN_FLIGHT = 2;
 
@@ -79,8 +79,6 @@ namespace VulkanEngine {
 		///////////* EXTERNAL *////////////
 		///////////////////////////////////
 		Scene* m_Scene;
-		Camera* m_Camera;
-
 
 		///////////////////////////////////
 		//////////* GLFW GLOBAL *//////////
@@ -95,12 +93,12 @@ namespace VulkanEngine {
 		VkSurfaceKHR m_Surface;
 
 		VkPhysicalDevice m_PhysicalDevice = VK_NULL_HANDLE;
-		VkDevice m_Device; // LogicalDevice
+		VkDevice m_Device;
 
 		VkQueue m_GraphicsQueue;
 		VkQueue m_PresentQueue;
 
-		// Swap chain Images
+		// SWAP CHAIN
 		VkSwapchainKHR m_SwapChain;
 		std::vector<VkImage> m_SwapChainImages;
 		VkFormat m_SwapChainImageFormat;
@@ -108,9 +106,8 @@ namespace VulkanEngine {
 		std::vector<VkImageView> m_SwapChainImageViews;
 		std::vector<VkFramebuffer> m_SwapChainFramebuffers;
 
+		// RENDER PASS
 		VkRenderPass m_RenderPass;
-
-		// Images that make up individual frames in the SwapChain
 		VkImage m_ColorImage;
 		VkDeviceMemory m_ColorImageMemory;
 		VkImageView m_ColorImageView;
@@ -118,7 +115,7 @@ namespace VulkanEngine {
 		VkDeviceMemory m_DepthImageMemory;
 		VkImageView m_DepthImageView;
 
-		// Synchronization Tools
+		// SYNCHRONIZATION
 		std::vector<VkSemaphore> m_ImageAvailableSemaphores;
 		std::vector<VkSemaphore> m_RenderFinishedSemaphores;
 		std::vector<VkFence> m_InFlightFences;

@@ -1,7 +1,7 @@
 #pragma once
 
 #define GLFW_INCLUDE_VULKAN
-#include <GLFW/glfw3.h>	// -> VkStructs
+#include <GLFW/glfw3.h>
 
 #include "Vertex.h"
 
@@ -53,8 +53,8 @@ namespace VulkanEngine {
 		Texture* m_Texture;
 		Shader* m_Shader;
 
-		VkPipeline m_GraphicsPipeline; // (Shader / DescriptorSetLayout / Renderpass - Dependent)
-		VkPipelineLayout m_GraphicsPipelineLayout; // (DescriptorSetLayout - dependent)
+		VkPipeline m_GraphicsPipeline;
+		VkPipelineLayout m_GraphicsPipelineLayout;
 
 		// Per Material Data, e.g. Custom Data to be decided on
 		//std::vector<VkBuffer> m_UniformBuffers;
@@ -97,17 +97,18 @@ namespace VulkanEngine {
 		VkDeviceMemory m_VertexBufferMemory;
 		VkDeviceMemory m_IndexBufferMemory;
 
-		// Per Mesh Data, e.g. Transform. Vectors for Frames in Flight
+		// One Buffer per Frame in Flight
 		std::vector<VkBuffer> m_UniformBuffers;
 		std::vector<VkDeviceMemory> m_UniformBuffersMemory;
 		std::vector<void*> m_UniformBuffersMapped;
 
-		std::vector<VkDescriptorSet> m_DescriptorSets; // 1 per Frame in Flight | 1 global ubo, 1 model ubo, 1 texture per set
+		// One Descriptor Set per frame in Flight
+		std::vector<VkDescriptorSet> m_DescriptorSets;
 		
 		const std::string c_DefaultMeshPath = "models/viking_room.obj";
 
 	private:
-		void CreateBuffers();
+		//void CreateBuffers();
 
 	};
 }

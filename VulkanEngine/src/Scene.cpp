@@ -7,9 +7,10 @@
 
 namespace VulkanEngine {
 
-	Scene::Scene()
+	Scene::Scene(GLFWwindow* window)
+		: m_Window(window)
 	{
-		InitScene();
+		InitScene(window);
 	}
 
 	Scene::~Scene()
@@ -17,11 +18,17 @@ namespace VulkanEngine {
 		delete m_SceneData;
 	}
 
-	void Scene::InitScene()
+	void Scene::Update()
 	{
+		m_Camera->Update();
+	}
+
+	// TODO: Make it possible to author Scene directly in viewport via Hierarchical Node Setup
+	void Scene::InitScene(GLFWwindow* window)
+	{
+		m_Camera = new Camera(window);
 		m_SceneData = new SceneData;
 
-		// TODO: GENERALIZE THIS UNTIL NOW HARDCODED SETUP
 		float offset = 2.5f;
 
 		Mesh* mesh1 = new Mesh();
@@ -33,7 +40,7 @@ namespace VulkanEngine {
 		mesh2->SetTransform(glm::rotate(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -offset)), glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 
 
-		GridMesh* grid = new GridMesh(50, 50, 1, 1, glm::vec3(1,1,1));
+		GridMesh* grid = new GridMesh(50, 50, 1, 1, glm::vec4(0.1f, 0.1f, 0.1f, 1));
 		grid->m_Material->m_Shader->LoadFragmentShader("shaders/GridShaderFrag.spv");
 
 		m_SceneData->m_Meshes.push_back(mesh1);

@@ -20,6 +20,9 @@ namespace VulkanEngine {
 
 		float m_SpacePerSegmentX;
 		float m_SpacePerSegmentZ;
-	};
 
+		glm::vec3 m_GridColor;
+		glm::vec3 m_XAxisColor = glm::vec3(0.8f, 0.2f, 0.2f);
+		glm::vec3 m_ZAxisColor = glm::vec3(0.2f, 0.2f, 0.8f);
+	};
 }
