@@ -52,6 +52,20 @@ namespace VulkanEngine {
 		Mesh* mesh2 = new Mesh(meshFilepath, mesh2Material);
 		mesh2->SetTransform(glm::rotate(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -offset)), glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 
+		// Blender Default Cube
+		std::shared_ptr<Shader> cubeMeshMaterialShader = std::make_shared<Shader>(meshVertShaderPath, meshFragShaderPath);
+		std::shared_ptr<Texture> cubeMeshMaterialTexture = std::make_shared<Texture>("textures/black.png");
+		std::shared_ptr<Material> cubeMeshMaterial = std::make_shared<Material>(cubeMeshMaterialShader, cubeMeshMaterialTexture);
+		Mesh* cubeMesh = new Mesh("models/cube.obj", cubeMeshMaterial);
+		cubeMesh->SetTransform(glm::rotate(glm::translate(glm::mat4(1.0f), glm::vec3(-6.0f, 3.0f, 0.0f)), glm::radians(-45.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
+
+		// Blender Monkey
+		std::shared_ptr<Shader> monkeyMeshMaterialShader = std::make_shared<Shader>(meshVertShaderPath, "shaders/frag.spv");
+		std::shared_ptr<Texture> monkeyMeshMaterialTexture = std::make_shared<Texture>("textures/neon.png");
+		std::shared_ptr<Material> monkeyMeshMaterial = std::make_shared<Material>(monkeyMeshMaterialShader, monkeyMeshMaterialTexture);
+		Mesh* monkeyMesh = new Mesh("models/monkey.obj", monkeyMeshMaterial);
+		monkeyMesh->SetTransform(glm::rotate(glm::translate(glm::mat4(1.0f), glm::vec3(6.0f, 3.0f, 0.0f)), glm::radians(-45.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
+
 		// Generated GridMesh
 		std::shared_ptr<Shader> gridMeshMaterialShader = std::make_shared<Shader>("shaders/vert.spv", "shaders/GridShaderFrag.spv");
 		std::shared_ptr<Texture> gridMeshMaterialTexture = std::make_shared<Texture>("textures/viking_room.png");
@@ -60,7 +74,9 @@ namespace VulkanEngine {
 
 		m_SceneData->m_Meshes.push_back(mesh1);
 		m_SceneData->m_Meshes.push_back(mesh2);
+		m_SceneData->m_Meshes.push_back(cubeMesh);
+		m_SceneData->m_Meshes.push_back(monkeyMesh);
 		m_SceneData->m_Meshes.push_back(grid);
-		m_SceneData->m_MeshCount = 3;
+		m_SceneData->m_MeshCount = m_SceneData->m_Meshes.size();
 	}
 }
