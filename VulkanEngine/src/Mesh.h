@@ -12,7 +12,7 @@ namespace VulkanEngine {
 
 	class Texture {
 	public:
-		Texture();
+		Texture(const std::string& filepath);
 
 		std::string m_FilePath;
 
@@ -22,8 +22,7 @@ namespace VulkanEngine {
 		VkImageView m_TextureImageView;
 		VkSampler m_TextureSampler;
 	private:
-		void LoadDefaultTexture();
-		const std::string c_DefaultTextureFilePath = "textures/viking_room.png";
+
 	};
 	class TextureLibrary {
 
@@ -32,23 +31,18 @@ namespace VulkanEngine {
 
 	class Shader {
 	public:
-		Shader();
+		Shader(const std::string& vertShader, const std::string& fragShader);
 
 		std::vector<char> m_VertShaderCode;
 		std::vector<char> m_FragShaderCode;
-		void LoadFragmentShader(const std::string& shaderDirectory);
 
 	private:
-		void LoadDefaultShader();
-
-		const std::string c_DefaultVertShaderPath = "shaders/vert.spv";
-		const std::string c_DefaultFragShaderPath = "shaders/frag.spv";
 
 	};
 
 	class Material {
 	public:
-		Material();
+		Material(Shader* shader, Texture* texture);
 
 		Texture* m_Texture;
 		Shader* m_Shader;
@@ -61,7 +55,7 @@ namespace VulkanEngine {
 		//std::vector<VkDeviceMemory> m_UniformBuffersMemory;
 		//std::vector<void*> m_UniformBuffersMapped;
 	private:
-		void LoadDefaultMaterial();
+
 	};
 
 	class MaterialLibrary {
@@ -77,10 +71,10 @@ namespace VulkanEngine {
 	class Mesh {
 
 	public:
-		Mesh();
+		Mesh(Material* material);
+		Mesh(const std::string& filepath, Material* material);
 		virtual ~Mesh();
 
-		void LoadDefaultMesh();
 		void SetTransform(glm::mat4 transform);
 
 		glm::mat4 m_Transform = glm::mat4(1.0);
@@ -104,11 +98,9 @@ namespace VulkanEngine {
 
 		// One Descriptor Set per frame in Flight
 		std::vector<VkDescriptorSet> m_DescriptorSets;
-		
-		const std::string c_DefaultMeshPath = "models/viking_room.obj";
 
+		std::string m_Filepath;
 	private:
-		//void CreateBuffers();
 
 	};
 }

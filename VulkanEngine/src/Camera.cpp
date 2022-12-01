@@ -113,8 +113,6 @@ namespace VulkanEngine {
 			lookDir = glm::rotate(lookDir, -m_CameraOrbitSpeed * mousePositionDelta.x, camUp);
 			lookDir = glm::rotate(lookDir, -m_CameraOrbitSpeed * mousePositionDelta.y, camRight);
 
-			lookDir = 
-
 			m_Eye = m_LookAt - lookDir;
 		}
 

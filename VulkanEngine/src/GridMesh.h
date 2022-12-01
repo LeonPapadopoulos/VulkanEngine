@@ -7,7 +7,7 @@ namespace VulkanEngine {
 	class GridMesh : public Mesh
 	{
 	public:
-		GridMesh(uint8_t numSegmentsX, uint8_t numSegmentsZ, float spacePerSegmentX, float spacePerSegmentZ, glm::vec3 gridColor);
+		GridMesh(Material* material, uint8_t numSegmentsX, uint8_t numSegmentsZ, float spacePerSegmentX, float spacePerSegmentZ, glm::vec3 gridColor);
 		~GridMesh();
 
 

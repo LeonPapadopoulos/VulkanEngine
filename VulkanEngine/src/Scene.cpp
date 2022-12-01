@@ -29,19 +29,26 @@ namespace VulkanEngine {
 		m_Camera = new Camera(window);
 		m_SceneData = new SceneData;
 
+		//const std::string c_DefaultVertShaderPath = "shaders/vert.spv";
+		//const std::string c_DefaultFragShaderPath = "shaders/frag.spv";
+
 		float offset = 2.5f;
 
-		Mesh* mesh1 = new Mesh();
-		mesh1->LoadDefaultMesh();
+		std::string meshFilepath = "models/viking_room.obj";
+		std::string meshMaterialTexturePath = "textures/viking_room.png";
+		std::string meshVertShaderPath = "shaders/vert.spv";
+		std::string meshFragShaderPath = "shaders/frag.spv";
+
+		Material* mesh1Material = new Material(new Shader(meshVertShaderPath, meshFragShaderPath), new Texture(meshMaterialTexturePath));
+		Mesh* mesh1 = new Mesh(meshFilepath, mesh1Material);
 		mesh1->SetTransform(glm::rotate(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, offset)), glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 
-		Mesh* mesh2 = new Mesh();
-		mesh2->LoadDefaultMesh();
+		Material* mesh2Material = new Material(new Shader(meshVertShaderPath, meshFragShaderPath), new Texture(meshMaterialTexturePath));
+		Mesh* mesh2 = new Mesh(meshFilepath, mesh2Material);
 		mesh2->SetTransform(glm::rotate(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -offset)), glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 
-
-		GridMesh* grid = new GridMesh(50, 50, 1, 1, glm::vec4(0.1f, 0.1f, 0.1f, 1));
-		grid->m_Material->m_Shader->LoadFragmentShader("shaders/GridShaderFrag.spv");
+		Material* gridMeshMaterial = new Material(new Shader("shaders/vert.spv", "shaders/GridShaderFrag.spv"), new Texture("textures/viking_room.png"));
+		GridMesh* grid = new GridMesh(gridMeshMaterial, 50, 50, 1, 1, glm::vec4(0.1f, 0.1f, 0.1f, 1));
 
 		m_SceneData->m_Meshes.push_back(mesh1);
 		m_SceneData->m_Meshes.push_back(mesh2);

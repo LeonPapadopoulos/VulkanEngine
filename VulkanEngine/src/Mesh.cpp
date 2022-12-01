@@ -6,48 +6,28 @@
 
 namespace VulkanEngine {
 
-	Texture::Texture()
+	Texture::Texture(const std::string& filepath)
 	{
-		LoadDefaultTexture();
-	}
-
-	void Texture::LoadDefaultTexture()
-	{
-		m_FilePath = c_DefaultTextureFilePath;
+		m_FilePath = filepath;
 	}
 }
 
 namespace VulkanEngine {
 
-	Shader::Shader()
+	Shader::Shader(const std::string& vertShader, const std::string& fragShader)
 	{
-		LoadDefaultShader();
-	}
-
-	void Shader::LoadFragmentShader(const std::string& shaderDirectory)
-	{
-		m_FragShaderCode = readFile(shaderDirectory);
-	}
-
-	void Shader::LoadDefaultShader()
-	{
-		m_VertShaderCode = readFile(c_DefaultVertShaderPath);
-		m_FragShaderCode = readFile(c_DefaultFragShaderPath);
+		m_VertShaderCode = readFile(vertShader);
+		m_FragShaderCode = readFile(fragShader);
 	}
 }
 
 
 namespace VulkanEngine {
 
-	Material::Material()
+	Material::Material(Shader* shader, Texture* texture)
 	{
-		LoadDefaultMaterial();
-	}
-
-	void Material::LoadDefaultMaterial()
-	{
-		m_Texture = new Texture();
-		m_Shader = new Shader();
+		m_Texture = texture;
+		m_Shader = shader;
 	}
 }
 
@@ -68,32 +48,26 @@ namespace VulkanEngine {
 
 namespace VulkanEngine {
 
-	Mesh::Mesh()
+	Mesh::Mesh(Material* material)
 	{
-		m_Material = new Material();
+		m_Material = material;
+	}
+
+	Mesh::Mesh(const std::string& filepath, Material* material)
+	{
+		m_Filepath = filepath;
+		m_Material = material;
+		loadModel(filepath, m_Vertices, m_Indices);
 	}
 
 	Mesh::~Mesh()
 	{
-		// TODO
-		// Destroy Vertex & Index Buffer
-		// Free Vertex & Index Buffer Memory
-	}
-
-	void Mesh::LoadDefaultMesh()
-	{
-		loadModel(c_DefaultMeshPath, m_Vertices, m_Indices);
 	}
 
 	void Mesh::SetTransform(glm::mat4 transform)
 	{
 		m_Transform = transform;
 	}
-
-	//void Mesh::CreateBuffers()
-	//{
-	//	// TODO
-	//}
 }
 
 
