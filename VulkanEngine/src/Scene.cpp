@@ -29,9 +29,6 @@ namespace VulkanEngine {
 		m_Camera = new Camera(window);
 		m_SceneData = new SceneData;
 
-		//const std::string c_DefaultVertShaderPath = "shaders/vert.spv";
-		//const std::string c_DefaultFragShaderPath = "shaders/frag.spv";
-
 		float offset = 2.5f;
 
 		std::string meshFilepath = "models/viking_room.obj";
@@ -39,15 +36,26 @@ namespace VulkanEngine {
 		std::string meshVertShaderPath = "shaders/vert.spv";
 		std::string meshFragShaderPath = "shaders/frag.spv";
 
-		Material* mesh1Material = new Material(new Shader(meshVertShaderPath, meshFragShaderPath), new Texture(meshMaterialTexturePath));
+		std::shared_ptr<Shader> meshMaterialShader = std::make_shared<Shader>(meshVertShaderPath, meshFragShaderPath);
+
+		// TODO: Make sharing ressources like identical Materials / Textures etc. possible. Will need Ressource cleanup refactoring necessary!
+
+		// Dummy Loaded Mesh 1
+		std::shared_ptr<Texture> mesh1MaterialTexture = std::make_shared<Texture>(meshMaterialTexturePath);
+		std::shared_ptr<Material> mesh1Material = std::make_shared<Material>(meshMaterialShader, mesh1MaterialTexture);
 		Mesh* mesh1 = new Mesh(meshFilepath, mesh1Material);
 		mesh1->SetTransform(glm::rotate(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, offset)), glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 
-		Material* mesh2Material = new Material(new Shader(meshVertShaderPath, meshFragShaderPath), new Texture(meshMaterialTexturePath));
+		// Dummy Loaded Mesh 2
+		std::shared_ptr<Texture> mesh2MaterialTexture = std::make_shared<Texture>(meshMaterialTexturePath);
+		std::shared_ptr<Material> mesh2Material = std::make_shared<Material>(meshMaterialShader, mesh2MaterialTexture);
 		Mesh* mesh2 = new Mesh(meshFilepath, mesh2Material);
 		mesh2->SetTransform(glm::rotate(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -offset)), glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 
-		Material* gridMeshMaterial = new Material(new Shader("shaders/vert.spv", "shaders/GridShaderFrag.spv"), new Texture("textures/viking_room.png"));
+		// Generated GridMesh
+		std::shared_ptr<Shader> gridMeshMaterialShader = std::make_shared<Shader>("shaders/vert.spv", "shaders/GridShaderFrag.spv");
+		std::shared_ptr<Texture> gridMeshMaterialTexture = std::make_shared<Texture>("textures/viking_room.png");
+		std::shared_ptr<Material> gridMeshMaterial = std::make_shared<Material>(gridMeshMaterialShader, gridMeshMaterialTexture);
 		GridMesh* grid = new GridMesh(gridMeshMaterial, 50, 50, 1, 1, glm::vec4(0.1f, 0.1f, 0.1f, 1));
 
 		m_SceneData->m_Meshes.push_back(mesh1);

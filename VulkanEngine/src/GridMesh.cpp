@@ -3,7 +3,7 @@
 
 namespace VulkanEngine {
 
-	GridMesh::GridMesh(Material* material, uint8_t numSegmentsX, uint8_t numSegmentsZ, float spacePerSegmentX, float spacePerSegmentZ, glm::vec3 gridColor)
+	GridMesh::GridMesh(std::shared_ptr<Material> material, uint8_t numSegmentsX, uint8_t numSegmentsZ, float spacePerSegmentX, float spacePerSegmentZ, glm::vec3 gridColor)
 		: Mesh(material), m_NumSegmentsX(numSegmentsX), m_NumSegmentsZ(numSegmentsZ), m_SpacePerSegmentX(spacePerSegmentX), m_SpacePerSegmentZ(spacePerSegmentZ)
 	{
 		createGridMesh(numSegmentsX, numSegmentsZ, spacePerSegmentX, spacePerSegmentZ, gridColor);

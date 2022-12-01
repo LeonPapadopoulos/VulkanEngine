@@ -24,7 +24,7 @@ namespace VulkanEngine {
 
 namespace VulkanEngine {
 
-	Material::Material(Shader* shader, Texture* texture)
+	Material::Material(std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture)
 	{
 		m_Texture = texture;
 		m_Shader = shader;
@@ -48,12 +48,12 @@ namespace VulkanEngine {
 
 namespace VulkanEngine {
 
-	Mesh::Mesh(Material* material)
+	Mesh::Mesh(std::shared_ptr<Material> material)
 	{
 		m_Material = material;
 	}
 
-	Mesh::Mesh(const std::string& filepath, Material* material)
+	Mesh::Mesh(const std::string& filepath, std::shared_ptr<Material> material)
 	{
 		m_Filepath = filepath;
 		m_Material = material;

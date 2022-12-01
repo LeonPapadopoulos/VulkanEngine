@@ -7,6 +7,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 namespace VulkanEngine {
 
@@ -42,10 +43,10 @@ namespace VulkanEngine {
 
 	class Material {
 	public:
-		Material(Shader* shader, Texture* texture);
+		Material(std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture);
 
-		Texture* m_Texture;
-		Shader* m_Shader;
+		std::shared_ptr<Texture> m_Texture;
+		std::shared_ptr<Shader> m_Shader;
 
 		VkPipeline m_GraphicsPipeline;
 		VkPipelineLayout m_GraphicsPipelineLayout;
@@ -71,15 +72,15 @@ namespace VulkanEngine {
 	class Mesh {
 
 	public:
-		Mesh(Material* material);
-		Mesh(const std::string& filepath, Material* material);
+		Mesh(std::shared_ptr<Material> material);
+		Mesh(const std::string& filepath, std::shared_ptr<Material> material);
 		virtual ~Mesh();
 
 		void SetTransform(glm::mat4 transform);
 
 		glm::mat4 m_Transform = glm::mat4(1.0);
 
-		Material* m_Material;
+		std::shared_ptr<Material> m_Material;
 
 		VkPrimitiveTopology m_Topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 

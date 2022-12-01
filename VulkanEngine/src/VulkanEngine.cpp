@@ -129,7 +129,7 @@ namespace VulkanEngine {
 		{
 			Mesh* currentMesh = (*m_Scene).m_SceneData->m_Meshes[i];
 			//ASSUMES ONLY 1 MATERIAL
-			Material* material = currentMesh->m_Material;
+			std::shared_ptr<Material> material = currentMesh->m_Material;
 
 			vkDestroyPipeline(m_Device, material->m_GraphicsPipeline, nullptr);
 			vkDestroyPipelineLayout(m_Device, material->m_GraphicsPipelineLayout, nullptr);
@@ -163,10 +163,11 @@ namespace VulkanEngine {
 			Mesh* currentMesh = (*m_Scene).m_SceneData->m_Meshes[i];
 
 			// ASSUMES ONLY 1 MATERIAL PER MESH
-			Material* currentMeshMaterial = currentMesh->m_Material;
+			std::shared_ptr<Material> currentMeshMaterial = currentMesh->m_Material;
 			// ASSUMES ONLY 1 TEXTURE PER MATERIAL
-			Texture* texture = currentMeshMaterial->m_Texture;
+			std::shared_ptr<Texture> texture = currentMeshMaterial->m_Texture;
 
+			// TODO: Reminder! If Meshes/Materials share Textures, attempting to 'Destroy' them multiple times will cause ValidationLayer Errors
 			vkDestroySampler(m_Device, texture->m_TextureSampler, nullptr);
 			vkDestroyImageView(m_Device, texture->m_TextureImageView, nullptr);
 			vkDestroyImage(m_Device, texture->m_TextureImage, nullptr);
@@ -824,7 +825,7 @@ namespace VulkanEngine {
 		{
 			Mesh* mesh = (*m_Scene).m_SceneData->m_Meshes[i];
 			// ASSUMES ONLY 1 MATERIAL PER MESH;
-			Material* material = mesh->m_Material;
+			std::shared_ptr<Material> material = mesh->m_Material;
 
 			createGraphicsPipeline(m_Device , mesh->m_Topology, material->m_Shader->m_VertShaderCode, material->m_Shader->m_FragShaderCode, m_MsaaSamples, m_DescriptorSetLayout, m_RenderPass, material->m_GraphicsPipelineLayout, material->m_GraphicsPipeline);
 		}
@@ -1070,9 +1071,9 @@ namespace VulkanEngine {
 			Mesh* currentMesh = scene.m_SceneData->m_Meshes[i];
 
 			// ASSUMES ONLY 1 MATERIAL PER MESH
-			Material* currentMeshMaterial = currentMesh->m_Material;
+			std::shared_ptr<Material> currentMeshMaterial = currentMesh->m_Material;
 			// ASSUMES ONLY 1 TEXTURE PER MATERIAL
-			Texture* texture = currentMeshMaterial->m_Texture;
+			std::shared_ptr<Texture> texture = currentMeshMaterial->m_Texture;
 			
 			createTextureImage(m_Device, m_CommandPool, texture->m_FilePath, texture->m_MipLevels, texture->m_TextureImageMemory, texture->m_TextureImage);
 			createTextureImageView(m_Device, texture->m_TextureImage, texture->m_MipLevels, texture->m_TextureImageView);
@@ -1470,12 +1471,12 @@ namespace VulkanEngine {
 	void VKEngine::drawScene(Scene& scene, const VkCommandBuffer& commandBuffer)
 	{
 		Mesh* lastMesh = nullptr;
-		Material* lastMaterial = nullptr;
+		std::shared_ptr<Material> lastMaterial = nullptr;
 		for (size_t i = 0; i < (*m_Scene).m_SceneData->m_MeshCount; i++)
 		{
 			Mesh* currentMesh = (*m_Scene).m_SceneData->m_Meshes[i];
 			// ASSUMES ONLY 1 MATERIAL PER MESH;
-			Material* currentMaterial = currentMesh->m_Material;
+			std::shared_ptr<Material> currentMaterial = currentMesh->m_Material;
 
 			if (currentMaterial != lastMaterial)
 			{

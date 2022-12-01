@@ -2,12 +2,14 @@
 
 #include "Mesh.h"
 
+#include <memory>
+
 namespace VulkanEngine {
 
 	class GridMesh : public Mesh
 	{
 	public:
-		GridMesh(Material* material, uint8_t numSegmentsX, uint8_t numSegmentsZ, float spacePerSegmentX, float spacePerSegmentZ, glm::vec3 gridColor);
+		GridMesh(std::shared_ptr<Material> material, uint8_t numSegmentsX, uint8_t numSegmentsZ, float spacePerSegmentX, float spacePerSegmentZ, glm::vec3 gridColor);
 		~GridMesh();
 
 
