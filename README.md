@@ -4,7 +4,7 @@
 This is my most recent one of my personal projects aimed to get me familiar with both C++ and Vulkan, as I have had yet to make use of them.
 
 ## CURRENTLY WORKING ON 
-- Integrating Dear ImGui
+- Overdue cleanup & code refactoring! [Dismantling VulkanEngine.cpp into proper subscripts] [Address all 'TODO's' in VulkanEngine.cpp]
 
 ## NEXT STEPS:
 - Push Vulkan Renderer in its own 'Sub-Window'
@@ -16,6 +16,7 @@ This is my most recent one of my personal projects aimed to get me familiar with
 - Rendering arbitrary amounts of unique 3D Meshes
 - Scene Camera Controller (Panning, FreeLook, Orbiting, Zoom)
 - Scene World Grid with indicated XZ Axis
+- Basic integration of Dear ImGui
 
 ## CURRENT STATE
 
