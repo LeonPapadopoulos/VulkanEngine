@@ -1,4 +1,5 @@
 #pragma once
+//#define GLFW_INCLUDE_NONE // needed for dear imgui?
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
@@ -26,6 +27,7 @@
 #include "Camera.h"
 #include "Scene.h"
 #include "Vertex.h"
+
 
 namespace VulkanEngine {
 
@@ -129,7 +131,6 @@ namespace VulkanEngine {
 		VkSampleCountFlagBits m_MsaaSamples = VK_SAMPLE_COUNT_1_BIT;
 
 
-
 		//////////////////////////////////
 		/////* VULKAN MESH SPECIFIC */////
 		//////////////////////////////////
@@ -152,6 +153,18 @@ namespace VulkanEngine {
 		///////////////////////////////////////////////////////////////////////////////////
 		///////////////////////////////////////////////////////////////////////////////////
 		///////////////////////////////////////////////////////////////////////////////////
+
+		VkDescriptorPool m_DescriptorPoolImGui;
+		VkRenderPass m_RenderPassImGui;
+		std::vector<VkCommandBuffer> m_CommandBuffersImGui;
+		std::vector<VkCommandPool> m_CommandPoolsImGui;
+		std::vector<VkFramebuffer> m_FramebuffersImGui;
+		void InitImGui();
+		void RunImGui();
+		void ImGuiFrameRender(size_t imageIndex);
+		void ImGuiRecreateRessources();
+		//void CheckImGuiVulkanInit(VkResult err);
+
 
 		///////////////////////////////////
 		/////* VULKAN STANDARD SETUP */////
@@ -192,7 +205,7 @@ namespace VulkanEngine {
 		void createUniformBuffers(const VkDevice& logicalDevice, const int& maxFramesInFlight, VkDeviceSize bufferSize, std::vector<VkBuffer>& uniformBuffers, std::vector<VkDeviceMemory>& uniformBuffersMemory, std::vector<void*>& uniformBuffersMapped);
 		void createDescriptorPool(const VkDevice& logicalDevice, const int& maxFramesInFlight, VkDescriptorPool& descriptorPool);
 		void createDescriptorSets(const VkDevice& logicalDevice, const int& maxFramesInFlight, const VkDescriptorSetLayout& descriptorSetLayout, const VkDescriptorPool& descriptorPool, const std::vector<VkBuffer>& uniformBuffersGLOBAL, const std::vector<VkBuffer>& uniformBuffersMODEL, const VkImageView& textureImageView, const VkSampler& textureSampler, std::vector<VkDescriptorSet>& descriptorSets);
-		void createCommandBuffers(const VkDevice& logicalDevice, const int& maxFramesInFlight, const VkCommandPool& commandPool, std::vector<VkCommandBuffer>& commandBuffers);
+		void createCommandBuffers(const VkDevice& logicalDevice, const int& commandBufferCount, const VkCommandPool& commandPool, std::vector<VkCommandBuffer>& commandBuffers);
 
 		// CUSTOM
 		void createUniformBuffersCamera();

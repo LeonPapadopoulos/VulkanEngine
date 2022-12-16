@@ -15,6 +15,11 @@ namespace VulkanEngine {
 
 	Scene::~Scene()
 	{
+		for (int i = 0; i < (*m_SceneData).m_Meshes.size(); i++)
+		{
+			delete (*m_SceneData).m_Meshes[i];
+		}
+
 		delete m_SceneData;
 	}
 
