@@ -19,7 +19,7 @@ This is my most recent one of my personal projects aimed to get me familiar with
 
 ## CURRENT STATE
 
-![VulkanEngine](https://github.com/LeonPapadopoulos/VulkanEngine/blob/main/VulkanEngine/images/VulkanEngine_Viewport_01Dec22.PNG)
+![VulkanEngine](https://github.com/LeonPapadopoulos/VulkanEngine/blob/main/VulkanEngine/images/VulkanEngine_State_16Dec2022.PNG)
 
 ## DISCLAIMER:
 Won't build as is! Needs the list of external dependencies referenced in its project settings. Also make sure to swap the filepaths to test meshes in scene.cpp for your own, while providing the appropriate .obj files in the meshes folder. [-> Meshes using only 1 Material!]
